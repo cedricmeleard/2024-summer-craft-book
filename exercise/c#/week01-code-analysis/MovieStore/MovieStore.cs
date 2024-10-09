@@ -18,9 +18,9 @@ public class MovieStore
     {
         if (AllMovies.TryGetValue(id, out Movie movie))
         {
-            if (movie.TotalCopies - movie.BorrowedCopies > 0)
+            if (movie.CanPurchase())
             {
-                movie.TotalCopies--;
+                movie.Bought();
                 if (movie.CanSell())
                 {
                     Sales.Sell(movie, customer);
@@ -64,7 +64,7 @@ public class MovieStore
             }
             else
             {
-                movie.TotalCopies = newTotalCopies;
+                movie.UpdateCopies(newTotalCopies);
             }
         }
         else
@@ -91,7 +91,7 @@ public class MovieStore
         {
             if (movie.TotalCopies - movie.BorrowedCopies > 0)
             {
-                movie.BorrowedCopies++;
+                movie.BorrowCopy();
             }
             else
             {
@@ -110,7 +110,7 @@ public class MovieStore
         {
             if (movie.BorrowedCopies > 0)
             {
-                movie.BorrowedCopies--;
+                movie.ReturnCopy();
             }
             else
             {

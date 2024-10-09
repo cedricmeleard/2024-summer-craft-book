@@ -91,7 +91,7 @@ public class MovieStoreTest
     public void TestBuyMovie()
     {
         var movie = _store.AllMovies["001"];
-        movie.UnitPrice = 5d;
+        movie.UpdatePrice(5d);
 
         _store.BuyMovie("Durant", "001");
 
