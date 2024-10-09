@@ -16,29 +16,25 @@ public class MovieStore
 
     public void BuyMovie(string customer, string id)
     {
-        if (AllMovies.TryGetValue(id, out Movie movie))
-        {
-            if (movie.CanPurchase())
-            {
-                movie.Bought();
-                if (movie.CanSell())
-                {
-                    Sales.Sell(movie, customer);
-                }
-                else
-                {
-                    _logger.Information("Movie not for sale");
-                }
-            }
-            else
-            {
-                _logger.Information("All copies are currently borrowed.");
-            }
-        }
-        else
-        {
+        if (!AllMovies.TryGetValue(id, out Movie movie)) {
             _logger.Information("Movie not available!");
+            return;
         }
+
+        if (!movie.CanPurchase()) {
+            _logger.Information("All copies are currently borrowed.");
+            return;
+        }
+        
+        // there might be a problem here, bought movie but cannot sell it
+        movie.Bought();
+
+        if (!movie.CanSell()) {
+            _logger.Information("Movie not for sale");
+            return;
+        }
+        
+        Sales.Sell(movie, customer);
     }
 
     public void AddMovie(string id, string title, string director, int totalCopies, double unitPrice)
@@ -56,71 +52,53 @@ public class MovieStore
 
     public void UpdateMovieCopies(string id, int newTotalCopies)
     {
-        if (AllMovies.TryGetValue(id, out Movie movie))
-        {
-            if (newTotalCopies < movie.BorrowedCopies)
-            {
-                _logger.Information("Cannot reduce total copies below borrowed copies.");
-            }
-            else
-            {
-                movie.UpdateCopies(newTotalCopies);
-            }
-        }
-        else
-        {
+        if (!AllMovies.TryGetValue(id, out Movie movie)) {
             _logger.Information("Movie not found!");
+            return;
         }
+        
+        if (newTotalCopies < movie.BorrowedCopies) {
+            _logger.Information("Cannot reduce total copies below borrowed copies.");
+            return;
+        }
+        
+        movie.UpdateCopies(newTotalCopies);
     }
 
     public void RemoveMovie(string id)
     {
-        if (AllMovies.ContainsKey(id))
-        {
-            AllMovies.Remove(id);
-        }
-        else
-        {
+        if (!AllMovies.ContainsKey(id)) {
             _logger.Information("Movie not found!");
+            return;
         }
+        
+        AllMovies.Remove(id);
     }
 
     public void BorrowMovie(string id)
     {
-        if (AllMovies.TryGetValue(id, out Movie movie))
-        {
-            if (movie.TotalCopies - movie.BorrowedCopies > 0)
-            {
-                movie.BorrowCopy();
-            }
-            else
-            {
-                _logger.Information("All copies are currently borrowed.");
-            }
-        }
-        else
-        {
+        if (!AllMovies.TryGetValue(id, out Movie movie)) {
             _logger.Information("Movie not available!");
+            return;
         }
+        if (movie.TotalCopies - movie.BorrowedCopies <= 0) {
+            _logger.Information("All copies are currently borrowed.");
+            return;
+        }
+        movie.BorrowCopy();
     }
 
     public void ReturnMovie(string id)
     {
-        if (AllMovies.TryGetValue(id, out Movie movie))
-        {
-            if (movie.BorrowedCopies > 0)
-            {
-                movie.ReturnCopy();
-            }
-            else
-            {
-                _logger.Information("Error: No copies were borrowed.");
-            }
-        }
-        else
-        {
+        if (!AllMovies.TryGetValue(id, out Movie movie)) {
             _logger.Information("Invalid movie ID!");
+            return;
         }
+        if (movie.BorrowedCopies <= 0) {
+            _logger.Information("Error: No copies were borrowed.");
+            return;
+        }
+        movie.ReturnCopy();
     }
     
     public List<Movie> FindMoviesByTitle(string title)
