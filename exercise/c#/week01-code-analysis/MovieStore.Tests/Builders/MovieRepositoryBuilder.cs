@@ -1,4 +1,8 @@
-namespace MovieStore.Tests;
+using MovieStore.Domain.Entities;
+using MovieStore.Domain.Ports;
+using MovieStore.Infrastructure.Adapters;
+
+namespace MovieStore.Tests.Builders;
 
 public class MovieRepositoryBuilder
 {

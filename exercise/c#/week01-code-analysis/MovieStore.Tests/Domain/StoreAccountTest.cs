@@ -1,6 +1,7 @@
+using MovieStore.Domain.Entities;
 using Xunit;
 
-namespace MovieStore.Tests;
+namespace MovieStore.Tests.Domain;
 
 public class StoreAccountTest
 {

@@ -1,12 +1,14 @@
 ﻿using Moq;
+using MovieStore.Domain.Ports;
+using MovieStore.Tests.Builders;
 using Xunit;
 
-namespace MovieStore.Tests;
+namespace MovieStore.Tests.Domain;
 
 public class MovieStoreTest
 {
-    private readonly MovieStore _store;
-    private readonly Mock<ILogger<MovieStore>> _logger = new();
+    private readonly MovieStore.Domain.UsesCases.MovieStore _store;
+    private readonly Mock<ILogger> _logger = new();
     private readonly IProvideMovie _movieProvider;
     
     public MovieStoreTest()
@@ -17,7 +19,7 @@ public class MovieStoreTest
             .WithMovie("003", "Dunkirk", "Christopher Nolan", 5, 0d)
             .Build();
         
-        _store = new MovieStore(_logger.Object, _movieProvider);
+        _store = new MovieStore.Domain.UsesCases.MovieStore(_logger.Object, _movieProvider);
     }
 
     [Fact]

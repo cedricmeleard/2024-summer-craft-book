@@ -1,6 +1,9 @@
-﻿namespace MovieStore;
+﻿using MovieStore.Domain.Entities;
+using MovieStore.Domain.Ports;
 
-public class MovieStore(ILogger<MovieStore> logger, IProvideMovie movieProvider)
+namespace MovieStore.Domain.UsesCases;
+
+public class MovieStore(ILogger logger, IProvideMovie movieProvider)
 {
     public Dictionary<string, Movie> AllMovies => movieProvider
         .GetAll()

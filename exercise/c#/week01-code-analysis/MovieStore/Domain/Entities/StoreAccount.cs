@@ -1,4 +1,4 @@
-﻿namespace MovieStore;
+﻿namespace MovieStore.Domain.Entities;
 
 public class StoreAccount
 {

@@ -1,4 +1,6 @@
-namespace MovieStore;
+using MovieStore.Infrastructure.Adapters;
+
+namespace MovieStore.Domain.Abstractions;
 
 public class Either<TData> 
     where TData : class

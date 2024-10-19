@@ -1,7 +1,9 @@
 using System.Collections.Immutable;
-using JetBrains.Core;
+using MovieStore.Domain.Abstractions;
+using MovieStore.Domain.Entities;
+using MovieStore.Domain.Ports;
 
-namespace MovieStore;
+namespace MovieStore.Infrastructure.Adapters;
 
 public sealed class MovieRepository : IProvideMovie
 {

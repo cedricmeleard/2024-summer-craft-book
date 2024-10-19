@@ -1,4 +1,4 @@
-﻿namespace MovieStore;
+﻿namespace MovieStore.Domain.Entities;
 
 public class Movie(string movieId, string title, string director, int totalCopies, double unitPrice)
 {
