@@ -6,19 +6,18 @@ namespace MovieStore.Tests;
 public class MovieStoreTest
 {
     private readonly MovieStore _store;
-    private readonly Mock<ILogger<MovieStore>> _logger;
+    private readonly Mock<ILogger<MovieStore>> _logger = new();
+    private readonly IProvideMovie _movieProvider;
+    
     public MovieStoreTest()
     {
-        _logger = new Mock<ILogger<MovieStore>>();
-        _store = new MovieStore(_logger.Object);
-        SetUp();
-    }
-
-    private void SetUp()
-    {
-        _store.AddMovie("001", "Inception", "Christopher Nolan", 10, 0d);
-        _store.AddMovie("002", "The Matrix", "Lana Wachowski, Lilly Wachowski", 8, 0d);
-        _store.AddMovie("003", "Dunkirk", "Christopher Nolan", 5, 0d);
+        _movieProvider = new MovieRepositoryBuilder()
+            .WithMovie("001", "Inception", "Christopher Nolan", 10, 0d)
+            .WithMovie("002", "The Matrix", "Lana Wachowski, Lilly Wachowski", 8, 0d)
+            .WithMovie("003", "Dunkirk", "Christopher Nolan", 5, 0d)
+            .Build();
+        
+        _store = new MovieStore(_logger.Object, _movieProvider);
     }
 
     [Fact]
@@ -29,6 +28,16 @@ public class MovieStoreTest
         Assert.NotNull(_store.AllMovies["002"]);
         Assert.Equal(9, _store.AllMovies["002"].TotalCopies);
         _logger.Verify(l => l.Information("Movie already exists! Updating total copies."), Times.Once());
+    }
+    
+    [Fact]
+    public void TestAddNewMovie()
+    {
+        _store.AddMovie("004", "The Batman", "Matt Reeves", 2, 0d);
+            
+        Assert.NotNull(_store.AllMovies["004"]);
+        Assert.Equal(2, _store.AllMovies["004"].TotalCopies);
+        _logger.Verify(l => l.Information("Movie already exists! Updating total copies."), Times.Never());
     }
         
     [Fact]
@@ -84,7 +93,7 @@ public class MovieStoreTest
     public void TestBorrowMovie_WhenMovieDoesNotExist_ShouldLogError()
     {
         _store.BorrowMovie("004");
-        _logger.Verify(l => l.Information("Movie not available!"), Times.Once());
+        _logger.Verify(l => l.Information("Movie not found!"), Times.Once());
     }
 
     [Fact]
@@ -105,13 +114,15 @@ public class MovieStoreTest
     {
         _store.BuyMovie("Durant", "001");
         _logger.Verify(l => l.Information("Movie not for sale"), Times.Once());
+
+        Assert.Equal(10, _store.AllMovies["001"].TotalCopies);
     }
         
     [Fact]
     public void TestBuyMovie_WhenMovieDoesNotExist_ShouldLogError()
     {
         _store.BuyMovie("Durant", "004");
-        _logger.Verify(l => l.Information("Movie not available!"), Times.Once());
+        _logger.Verify(l => l.Information("Movie not found!"), Times.Once());
     }
         
     [Fact]
@@ -121,6 +132,8 @@ public class MovieStoreTest
             _store.BorrowMovie("003");
         _store.BuyMovie("Durant", "003");
         _logger.Verify(l => l.Information("All copies are currently borrowed."), Times.Once());
+        
+        Assert.Equal(5, _store.AllMovies["003"].TotalCopies);
     }
 
     [Fact]
@@ -149,7 +162,7 @@ public class MovieStoreTest
         // Act
         _store.ReturnMovie("004");
         // Assert
-        _logger.Verify(l => l.Information("Invalid movie ID!"), Times.Once());
+        _logger.Verify(l => l.Information("Movie not found!"), Times.Once());
     }
 
     [Fact]

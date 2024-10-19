@@ -6,4 +6,22 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Compile Remove="StrykerOutput\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="StrykerOutput\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="StrykerOutput\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="JetBrains.ReSharper.TestRunner.Merged">
+        <HintPath>..\..\..\..\..\..\..\..\snap\rider\500\lib\ReSharperHost\TestRunner\netcoreapp3.0\JetBrains.ReSharper.TestRunner.Merged.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>
