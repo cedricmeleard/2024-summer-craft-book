@@ -1,6 +1,5 @@
-namespace FizzBuzz
+namespace FizzBuzz;
+
+public sealed class OutOfRangeException : ArgumentException
 {
-    public sealed class OutOfRangeException : ArgumentException
-    {
-    }
 }

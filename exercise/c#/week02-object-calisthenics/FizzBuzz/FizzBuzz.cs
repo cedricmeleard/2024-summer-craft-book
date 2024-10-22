@@ -1,39 +1,17 @@
-﻿namespace FizzBuzz
+﻿namespace FizzBuzz;
+
+public static class FizzBuzz
 {
-    public static class FizzBuzz
+    public static string Convert(int input)
     {
-        public static string Convert(int input)
-        {
-            if (input > 0)
-            {
-                if (input <= 100)
-                {
-                    if (input % 3 == 0 && input % 5 == 0)
-                    {
-                        return "FizzBuzz";
-                    }
+        input.EnsureInputValid();
 
-                    if (input % 3 == 0)
-                    {
-                        return "Fizz";
-                    }
-
-                    if (input % 5 == 0)
-                    {
-                        return "Buzz";
-                    }
-
-                    return input.ToString();
-                }
-                else
-                {
-                    throw new OutOfRangeException();
-                }
-            }
-            else
-            {
-                throw new OutOfRangeException();
-            }
-        }
+        if (input.IsFizzBuzz()) return Constants.Fizzbuzz;
+            
+        if (input.IsFizz()) return Constants.Fizz;
+            
+        return input.IsBuzz()
+            ? Constants.Buzz
+            : input.ToString();
     }
 }
