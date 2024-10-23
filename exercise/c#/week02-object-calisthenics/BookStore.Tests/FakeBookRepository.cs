@@ -24,7 +24,6 @@ public class FakeBookRepositoryBuilder
 public class FakeBookRepository : IProvideBooks
 {
     private readonly List<Book> _inv = new();
-    public IReadOnlyCollection<Book> GetAll() => _inv.ToList();
     public void Add(Book book) 
     {
         _inv.Add(book);
@@ -33,4 +32,8 @@ public class FakeBookRepository : IProvideBooks
     {
         _inv.Remove(book);
     }
+    public Book? FindBookByTitleAndAuthor(string title, string author) => _inv.Find(b => b.Title == title && b.Author == author);
+    
+    // For Testing purpose
+    public IReadOnlyCollection<Book> GetAll() => _inv.ToList();
 }
