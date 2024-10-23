@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\week02-object-calisthenics\BookStore\BookStore.csproj" />
+      <ProjectReference Include="..\BookStore\BookStore.csproj" />
     </ItemGroup>
 
 </Project>
