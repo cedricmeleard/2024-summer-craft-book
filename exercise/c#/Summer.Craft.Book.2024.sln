@@ -77,6 +77,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Exercise 1 - FizzBuzz comes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Exercise 2 - All Properties", "Exercise 2 - All Properties", "{9DBEFF3F-17C1-42DC-BE74-A0EBD243499A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookStore.Tests", "BookStore.Tests\BookStore.Tests.csproj", "{B39F6EC2-97AE-4B41-9171-06BFC5964643}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +161,10 @@ Global
 		{35C3EBB2-AE66-4BF8-8238-A30A73611F4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35C3EBB2-AE66-4BF8-8238-A30A73611F4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35C3EBB2-AE66-4BF8-8238-A30A73611F4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B39F6EC2-97AE-4B41-9171-06BFC5964643}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B39F6EC2-97AE-4B41-9171-06BFC5964643}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B39F6EC2-97AE-4B41-9171-06BFC5964643}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B39F6EC2-97AE-4B41-9171-06BFC5964643}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -194,6 +200,7 @@ Global
 		{6C837D1E-3B61-444F-803F-159EA3186A39} = {320CCC58-9294-4623-8A11-8AF787DD3ECC}
 		{9DBEFF3F-17C1-42DC-BE74-A0EBD243499A} = {3DF62C71-C244-4E50-90F6-646389E65F49}
 		{35C3EBB2-AE66-4BF8-8238-A30A73611F4B} = {9DBEFF3F-17C1-42DC-BE74-A0EBD243499A}
+		{B39F6EC2-97AE-4B41-9171-06BFC5964643} = {2A4625D9-C937-4CB7-ADD6-C2CE5795D785}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D84E4BCC-7F3F-467F-B71C-1E55A2249326}

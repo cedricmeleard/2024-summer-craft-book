@@ -1,32 +1,31 @@
-namespace BookStore
+namespace BookStore;
+
+public class Book
 {
-    public class Book
+    public string Title { get; set; }
+    public string Author { get; set; }
+    public int Copies { get; set; }
+
+    public Book(string title, string author, int copies)
     {
-        public string Title { get; set; }
-        public string Author { get; set; }
-        public int Copies { get; set; }
+        Title = title;
+        Author = author;
+        Copies = copies;
+    }
 
-        public Book(string title, string author, int copies)
+    public void AddCopies(int additionalCopies)
+    {
+        if (additionalCopies > 0)
         {
-            Title = title;
-            Author = author;
-            Copies = copies;
+            Copies += additionalCopies;
         }
+    }
 
-        public void AddCopies(int additionalCopies)
+    public void RemoveCopies(int soldCopies)
+    {
+        if (soldCopies > 0 && Copies >= soldCopies)
         {
-            if (additionalCopies > 0)
-            {
-                Copies += additionalCopies;
-            }
-        }
-
-        public void RemoveCopies(int soldCopies)
-        {
-            if (soldCopies > 0 && Copies >= soldCopies)
-            {
-                Copies -= soldCopies;
-            }
+            Copies -= soldCopies;
         }
     }
 }
