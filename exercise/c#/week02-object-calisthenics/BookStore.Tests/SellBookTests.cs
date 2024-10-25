@@ -1,3 +1,8 @@
+using System.Linq;
+using BookStore.Models;
+using BookStore.Tests.TestHelpers;
+using Xunit;
+
 namespace BookStore.Tests;
 
 public class SellBookTests
@@ -12,12 +17,10 @@ public class SellBookTests
         
         var sut = new BookStore(bookRepository);
         
-        sut.SellBook("Neuromancer", "Wiliam Gibson", 2);
+        sut.SellBook(BookHelper.Neuromancer, BookHelper.WillamGibson, new CopiesCount(2));
         
-        var book = bookRepository.GetAll()
-            .FirstOrDefault(t => t.Title == "Neuromancer");
-        
-        Assert.Equal(3, book.Copies);
+        var book = bookRepository.GetAll().FirstOrDefault(t => t.Title.Equals(BookHelper.Neuromancer));
+        Assert.Equal(new CopiesCount(3), book.Copies);
     }
     
     [Fact]
@@ -30,10 +33,10 @@ public class SellBookTests
         
         var sut = new BookStore(bookRepository);
         
-        sut.SellBook("Neuromancer", "Wiliam Gibson", 1);
+        sut.SellBook(BookHelper.Neuromancer, BookHelper.WillamGibson, new CopiesCount(1));
         
         Assert.Single(bookRepository.GetAll());
-        Assert.Equal("Hyperion", bookRepository.GetAll().First().Title);
+        Assert.Equal(new BookTitle("Hyperion"), bookRepository.GetAll().First().Title);
     }
     
     [Fact]
@@ -45,9 +48,9 @@ public class SellBookTests
         
         var sut = new BookStore(bookRepository);
         
-        sut.SellBook("Neuromancer", "Wiliam Gibson", 1);
+        sut.SellBook(new BookTitle("Neuromancer"), new Author("Wiliam Gibson"), new CopiesCount(1));
         
         Assert.Single(bookRepository.GetAll());
-        Assert.Equal("Hyperion", bookRepository.GetAll().First().Title);
+        Assert.Equal(new BookTitle("Hyperion"), bookRepository.GetAll().First().Title);
     }
 }

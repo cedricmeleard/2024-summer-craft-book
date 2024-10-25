@@ -1,15 +1,13 @@
+using BookStore.Models;
+
 namespace BookStore;
 
 public class BookStore(IProvideBooks bookRepository)
 {
-    public void AddBook(string? title, string? author, int copies)
+    public void AddBook(BookTitle title, Author author, CopiesCount copies)
     {
-        if (title == null || author == null || copies <= 0) {
-            return;
-        }
-
         Book? foundBook = bookRepository.FindBookByTitleAndAuthor(title, author);
-        if (foundBook != null) {
+        if (foundBook is not null) {
             foundBook.AddCopies(copies);
             return;
         }
@@ -17,13 +15,13 @@ public class BookStore(IProvideBooks bookRepository)
         bookRepository.Add(new Book(title, author, copies));
     }
 
-    public void SellBook(string title, string author, int copies)
+    public void SellBook(BookTitle title, Author author, CopiesCount copies)
     {
         Book? book = bookRepository.FindBookByTitleAndAuthor(title, author);
         if(book is null) return;
         
         book.RemoveCopies(copies);
-        if (book.Copies <= 0) {
+        if (book.HasNotCopyLeft) {
             bookRepository.Remove(book);
         }
     }

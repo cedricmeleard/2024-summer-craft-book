@@ -1,4 +1,8 @@
-namespace BookStore.Tests;
+using System.Collections.Generic;
+using System.Linq;
+using BookStore.Models;
+
+namespace BookStore.Tests.TestHelpers;
 
 public class FakeBookRepositoryBuilder
 {
@@ -14,7 +18,7 @@ public class FakeBookRepositoryBuilder
     }
     public FakeBookRepositoryBuilder WithBook(string title, string author, int quantity)
     {
-        var book = new Book(title, author, quantity);
+        var book = new Book(new BookTitle(title), new Author(author), new CopiesCount(quantity));
         books.Add(book);
 
         return this;
@@ -32,7 +36,9 @@ public class FakeBookRepository : IProvideBooks
     {
         _inv.Remove(book);
     }
-    public Book? FindBookByTitleAndAuthor(string title, string author) => _inv.Find(b => b.Title == title && b.Author == author);
+    public Book? FindBookByTitleAndAuthor(BookTitle title, Author author) => 
+        _inv.Find(b => b.Title.Equals(title)
+                       && b.Author.Equals(author));
     
     // For Testing purpose
     public IReadOnlyCollection<Book> GetAll() => _inv.ToList();

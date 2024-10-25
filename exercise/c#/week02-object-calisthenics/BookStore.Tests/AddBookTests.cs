@@ -1,3 +1,9 @@
+using System;
+using System.Linq;
+using BookStore.Models;
+using BookStore.Tests.TestHelpers;
+using Xunit;
+
 namespace BookStore.Tests;
 
 public class AddBookTests
@@ -11,14 +17,14 @@ public class AddBookTests
         
         var sut = new BookStore(bookRepository);
         
-        sut.AddBook("Neuromancer", "Wiliam Gibson", 1);
+        sut.AddBook(BookHelper.Neuromancer, BookHelper.WillamGibson, new CopiesCount(1));
         
         var book = bookRepository.GetAll()
-            .FirstOrDefault(t => t.Title == "Neuromancer");
+            .FirstOrDefault(t => t.Title.Equals(BookHelper.Neuromancer));
         Assert.NotNull(book);
-        Assert.Equal("Neuromancer", book.Title);
-        Assert.Equal("Wiliam Gibson", book.Author);
-        Assert.Equal(1, book.Copies);
+        Assert.Equal(new BookTitle("Neuromancer"), book.Title);
+        Assert.Equal(new Author("Wiliam Gibson"), book.Author);
+        Assert.Equal(new CopiesCount(1), book.Copies);
     }
     
     [Fact]
@@ -31,18 +37,18 @@ public class AddBookTests
         
         var sut = new BookStore(bookRepository);
         
-        sut.AddBook("Neuromancer", "Wiliam Gibson", 1);
+        sut.AddBook(BookHelper.Neuromancer, BookHelper.WillamGibson, new CopiesCount(1));
         
         var book = bookRepository.GetAll()
-            .FirstOrDefault(b => b.Title == "Neuromancer");
+            .FirstOrDefault(b => b.Title.Equals(BookHelper.Neuromancer));
         Assert.NotNull(book);
-        Assert.Equal("Neuromancer", book.Title);
-        Assert.Equal("Wiliam Gibson", book.Author);
-        Assert.Equal(2, book.Copies);
+        Assert.Equal(new BookTitle("Neuromancer"), book.Title);
+        Assert.Equal(new Author("Wiliam Gibson"), book.Author);
+        Assert.Equal(new CopiesCount(2), book.Copies);
         
         book = bookRepository.GetAll()
-            .FirstOrDefault(b => b.Title == "Hyperion");
-        Assert.Equal(4, book.Copies);
+            .FirstOrDefault(b => b.Title.Equals(new BookTitle("Hyperion")) );
+        Assert.Equal(new CopiesCount(4), book.Copies);
     }
     
     [Theory]
@@ -51,16 +57,19 @@ public class AddBookTests
     [InlineData("Neuromancer", "Wiliam Gibson", 0)]
     [InlineData("Neuromancer", "Wiliam Gibson", -1)]
     [InlineData(null, null, 1)]
+    [InlineData("Neuromancer", "", 1)]
+    [InlineData("", "Wiliam Gibson", 1)]
+    [InlineData("Neuromancer", "Wiliam Gibson", 0)]
+    [InlineData("Neuromancer", "Wiliam Gibson", -1)]
+    [InlineData("", "", 1)]
     public void AddBook_WhenInvalid_ShouldNotAdd(string title, string author, int copies)
     {
         var bookRepository = new FakeBookRepositoryBuilder()
             .Build();
         
         var sut = new BookStore(bookRepository);
-        
-        // TODO there is a smell here, only null and not null or empty    
-        sut.AddBook(title, author, copies);
-
-        Assert.Empty(bookRepository.GetAll());
+            
+        var act = () => sut.AddBook(new BookTitle(title), new Author(author), new CopiesCount(copies));
+        Assert.Throws<ArgumentException>(act);
     }
 }
