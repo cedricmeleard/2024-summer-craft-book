@@ -17,6 +17,7 @@ public class Password
             .CheckPasswordHasAtLeastOneCapitalLetter()
             .CheckPasswordHasAtLeastOneLowercaseLetter()
             .CheckPasswordHasAtLeastOneDigit()
+            .CheckPasswordHasAtLeastOneSpecialCharOf("*#@$%&.")
             .IsValid();
         
         // TODO something wrong here
