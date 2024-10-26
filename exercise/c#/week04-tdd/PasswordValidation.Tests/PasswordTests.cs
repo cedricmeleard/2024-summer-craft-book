@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using FsCheck;
 using FsCheck.Xunit;
 using Xunit;
+using Random = System.Random;
 
 namespace PasswordValidation.Tests;
 
@@ -19,12 +20,12 @@ public class PasswordTests
         Assert.Equal(entry, password.Value);
     }
     
-    [Property]
-    public Property Password_ThatMeetRequirement_ShoulBeValid(string? entry)
+    [Property(Arbitrary = new[] { typeof(PasswordGenerators) }, MaxTest = 100)]
+    public Property Password_ThatMeetRequirement_ShouldBeValid(string entry)
     {
         var property = () =>
         {
-            var result = Password.TryCreate(entry, out Password? password);
+            bool result = Password.TryCreate(entry, out Password? password);
             
             Assert.True(result);
             Assert.NotNull(password);
@@ -32,16 +33,8 @@ public class PasswordTests
             
             return result;
         };
-        var pattern = @"^[a-zA-Z0-9.*#@$%&]+$";
         
-        return property.When(entry is { Length: >= 8 }                       // At least 8 chars length 
-                             && entry.Any(char.IsUpper)                      // Must contain at least one Capital letter
-                             && entry.Any(char.IsLower)                      // Must contain at least one Lowercase letter
-                             && entry.Any(char.IsDigit)                      // Must contains a digit
-                             && entry.Any(c => "*#@$%&.".Contains(c))    // At least one of * # @ $ % &.
-                             // Should be chars (lower or upper), digit or one of * # @ $ % &
-                             && Regex.IsMatch(entry, pattern)
-                             );
+        return property.ToProperty();
     }
     
     # region Password defects
@@ -64,4 +57,42 @@ public class PasswordTests
     }
     
     #endregion
+}
+
+public static class PasswordGenerators
+{
+    public static Arbitrary<string> PasswordArbitrary()
+    {
+        return Arb.From(Gen.Sized(size =>
+        {
+            var minSize = Math.Max(size, 8);
+            
+            var upperCaseGen = Gen.Elements("ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray());
+            var lowerCaseGen = Gen.Elements("abcdefghijklmnopqrstuvwxyz".ToCharArray());
+            var digitGen = Gen.Elements("0123456789".ToCharArray());
+            var specialCharGen = Gen.Elements("*#@$%&.".ToCharArray());
+            var allAllowedGen = Gen.Elements("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789*#@$%&.".ToCharArray());
+
+            return from upper in upperCaseGen
+                from lower in lowerCaseGen
+                from digit in digitGen
+                from special in specialCharGen
+                from rest in Gen.ListOf(minSize - 4, allAllowedGen)
+                select new string(
+                    Shuffle(new[] { upper, lower, digit, special }
+                        .Concat(rest)
+                        .ToArray()));
+        }));
+    }
+    
+    private static readonly Random random = new();
+    private static char[] Shuffle(char[] array)
+    {
+        for (int i = array.Length - 1; i > 0; i--)
+        {
+            int j = random.Next(i + 1);
+            (array[i], array[j]) = (array[j], array[i]);
+        }
+        return array;
+    }
 }
