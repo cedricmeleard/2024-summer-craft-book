@@ -41,4 +41,13 @@ public class PasswordValidator
             ? Success() 
             : Failed;
     }
+    public PasswordValidator CheckPasswordHasAtLeastOneLowercaseLetter()
+    {
+        if (string.IsNullOrEmpty(_entry)) 
+            return Failed;
+        
+        return _entry.Any(char.IsLower) 
+            ? Success() 
+            : Failed;
+    }
 }

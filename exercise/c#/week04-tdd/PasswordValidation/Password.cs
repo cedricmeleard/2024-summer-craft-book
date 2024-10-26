@@ -15,6 +15,7 @@ public class Password
             .Init(entry)
             .CheckPasswordMatchRequiredLength()
             .CheckPasswordHasAtLeastOneCapitalLetter()
+            .CheckPasswordHasAtLeastOneLowercaseLetter()
             .IsValid();
         
         // TODO something wrong here

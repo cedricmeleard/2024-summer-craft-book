@@ -30,6 +30,7 @@ public class PasswordTests
             .When(
                 entry is { Length: >= 8 }   // At least 8 chars length 
                 && entry.Any(char.IsUpper)  // Must contains Capital letter
+                && entry.Any(char.IsLower)
                 );
     }
     
@@ -38,6 +39,7 @@ public class PasswordTests
     [Theory]
     [InlineData("aaa\\018\\006")]
     [InlineData("\\026\\0162(t9[Q\\029")]
+    [InlineData("PASSWORD")]
     public void PasswordWithEscapes_ShouldNotBe_Valid(string? entry)
     {
         var result = Password.TryCreate(entry, out Password? password);
