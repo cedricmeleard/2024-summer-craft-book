@@ -6,18 +6,35 @@ namespace PasswordValidation.Tests;
 
 public class PasswordTests
 {
-    # region Password Length
+    [Fact]
+    public void StrongPassword_ShouldBeValid()
+    {
+        var entry = "passWord";
+        var result = Password.TryCreate(entry, out Password? password);
+        
+        Assert.True(result);
+        Assert.NotNull(password);
+        Assert.Equal(entry, password.Value);
+    }
+    
     [Property]
-    public Property Password_With_MoreThan8Characters_ShouldBe_Valid(string? entry)
+    public Property Password_With_MoreThan8Characters_ShouldHave_A_CapitalLetter_ToBeValid(string? entry)
     {
         var property = () =>
         {
-             var result = Password.TryCreate(entry, out Password? password);
-             return result;
+            var result = Password.TryCreate(entry, out Password? password);
+            return result;
         };
-        return property.When(entry is { Length: >= 8 });
+        
+        return property
+            .When(
+                entry is { Length: >= 8 }   // At least 8 chars length 
+                && entry.Any(char.IsUpper)  // Must contains Capital letter
+                );
     }
-
+    
+    # region Password defects
+    
     [Theory]
     [InlineData("aaa\\018\\006")]
     [InlineData("\\026\\0162(t9[Q\\029")]
@@ -29,15 +46,5 @@ public class PasswordTests
         Assert.Null(password);
     }
     
-    [Fact]
-    public void StrongPassword_ShouldBeValid()
-    {
-        var entry = "passowrd";
-        var result = Password.TryCreate(entry, out Password? password);
-        
-        Assert.True(result);
-        Assert.NotNull(password);
-        Assert.Equal(entry, password.Value);
-    }
     #endregion
 }

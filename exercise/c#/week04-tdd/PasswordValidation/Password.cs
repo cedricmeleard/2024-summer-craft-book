@@ -12,8 +12,9 @@ public class Password
     public static bool TryCreate(string? entry, out Password password)
     {
         bool result = PasswordValidator
-            .Init()
-            .CheckPasswordMatchRequiredLength(entry)
+            .Init(entry)
+            .CheckPasswordMatchRequiredLength()
+            .CheckPasswordHasAtLeastOneCapitalLetter()
             .IsValid();
         
         // TODO something wrong here
