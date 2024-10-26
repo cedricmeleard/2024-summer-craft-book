@@ -9,8 +9,10 @@ public class Password
     {
         Value = passwordValue;
     }
-    public static bool TryCreate(string? entry, out Password password)
+    public static bool TryCreate(string? entry, out Password? password)
     {
+        password = null;
+        
         bool result = PasswordValidator
             .Init(entry)
             .CheckPasswordMatchRequiredLength()
@@ -18,15 +20,15 @@ public class Password
             .CheckPasswordHasAtLeastOneLowercaseLetter()
             .CheckPasswordHasAtLeastOneDigit()
             .CheckPasswordHasAtLeastOneSpecialCharOf("*#@$%&.")
+            .CheckPasswordMeetRequiredChars("^[a-zA-Z0-9.*#@$%&]+$")
             .IsValid();
-        
-        // TODO something wrong here
-        if (result) {
-            password = new Password(entry);
-            return true;
+
+        if (!result) {
+            return false;
         }
         
-        password = null;
-        return false;
+        password = new Password(entry);
+        return true;
+
     }
 }

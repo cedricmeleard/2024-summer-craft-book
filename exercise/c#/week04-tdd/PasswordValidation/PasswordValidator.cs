@@ -36,5 +36,7 @@ public class PasswordValidator
         => _isValid && _entry.Any(char.IsDigit) ? Success() : Failed;
     public PasswordValidator CheckPasswordHasAtLeastOneSpecialCharOf(string specials)
         => _isValid && _entry.Any(specials.Contains) ? Success() : Failed;
+    public PasswordValidator CheckPasswordMeetRequiredChars(string allowedPattern)
+        => _isValid && Regex.IsMatch(_entry, allowedPattern) ? Success() : Failed;
 }
 
