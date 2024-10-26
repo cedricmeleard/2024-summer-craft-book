@@ -15,32 +15,24 @@ public class PasswordValidator
     }
     public static PasswordValidator Init(string? entry) 
         => string.IsNullOrEmpty(entry) ? Failed : new(entry, true);
-    
-    private static PasswordValidator Failed => new PasswordValidatorError();
+
+    private static PasswordValidator Failed => new("", false);
     private PasswordValidator Success() => new(_entry!,true);
     
-    public virtual PasswordValidator CheckPasswordMatchRequiredLength()
+    public PasswordValidator CheckPasswordMatchRequiredLength()
     {
-        int escapedSequenceCount = Regex.Matches(_entry, @"\\[0-9]{3}").Count;
-        // Calculate real length considering escaped sequences as one character
-        bool isRealLengthGreaterOrEqualToEight = _entry.Length - escapedSequenceCount * 3 + escapedSequenceCount >= 8;
-
-        bool hasEscapedChars = escapedSequenceCount != 0;
+        // Considering escaped sequences as a invalid password
+        bool noEscapedChars = Regex.Matches(_entry, @"\\[0-9]{3}").Count == 0;
         
-        return !hasEscapedChars && isRealLengthGreaterOrEqualToEight  
+        return noEscapedChars && _entry.Length >= 8 
             ? Success() 
             : Failed;
     }
-    public virtual PasswordValidator CheckPasswordHasAtLeastOneCapitalLetter() 
-        => _entry.Any(char.IsUpper) ? Success() : Failed;
-    public virtual PasswordValidator CheckPasswordHasAtLeastOneLowercaseLetter() 
-        => _entry.Any(char.IsLower) ? Success() : Failed;
-
-    private sealed class PasswordValidatorError() : PasswordValidator("", false)
-    {
-        public override PasswordValidator CheckPasswordMatchRequiredLength() => Failed;
-        public override PasswordValidator CheckPasswordHasAtLeastOneLowercaseLetter() => Failed;
-        public override PasswordValidator CheckPasswordHasAtLeastOneCapitalLetter() => Failed;
-    }
+    public PasswordValidator CheckPasswordHasAtLeastOneCapitalLetter() 
+        => _isValid && _entry.Any(char.IsUpper) ? Success() : Failed;
+    public PasswordValidator CheckPasswordHasAtLeastOneLowercaseLetter() 
+        => _isValid && _entry.Any(char.IsLower) ? Success() : Failed;
+    public PasswordValidator CheckPasswordHasAtLeastOneDigit()
+        => _isValid && _entry.Any(char.IsDigit) ? Success() : Failed;
 }
 

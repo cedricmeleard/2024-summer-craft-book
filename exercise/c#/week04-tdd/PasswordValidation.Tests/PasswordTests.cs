@@ -9,7 +9,8 @@ public class PasswordTests
     [Fact]
     public void StrongPassword_ShouldBeValid()
     {
-        var entry = "passWord";
+        var entry = "p4ssWord";
+        
         var result = Password.TryCreate(entry, out Password? password);
         
         Assert.True(result);
@@ -29,8 +30,9 @@ public class PasswordTests
         return property
             .When(
                 entry is { Length: >= 8 }   // At least 8 chars length 
-                && entry.Any(char.IsUpper)  // Must contains Capital letter
-                && entry.Any(char.IsLower)
+                && entry.Any(char.IsUpper)  // Must contains at least one Capital letter
+                && entry.Any(char.IsLower)  // Must contains at least one Lowercase letter
+                && entry.Any(char.IsDigit)  // Must contains a digit
                 );
     }
     
@@ -40,7 +42,8 @@ public class PasswordTests
     [InlineData("aaa\\018\\006")]
     [InlineData("\\026\\0162(t9[Q\\029")]
     [InlineData("PASSWORD")]
-    public void PasswordWithEscapes_ShouldNotBe_Valid(string? entry)
+    [InlineData("PaSSWORD")]
+    public void PasswordThat_ShouldBe_Invalid(string? entry)
     {
         var result = Password.TryCreate(entry, out Password? password);
         
