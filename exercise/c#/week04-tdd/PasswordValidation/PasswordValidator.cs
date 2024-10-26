@@ -4,50 +4,43 @@ namespace PasswordValidation;
 
 public class PasswordValidator
 {
-    private const string EscapedSequencePattern = @"\\[0-9]{3}";
-    
     private readonly bool _isValid;
-    private readonly string? _entry;
+    private readonly string _entry;
     public bool IsValid() => _isValid;
-    
+
     private PasswordValidator(string entry, bool isValid)
     {
         _entry = entry;
         _isValid = isValid;
     }
-    public static PasswordValidator Init(string? entry) => new(entry, true);
-    private static PasswordValidator Failed => new(String.Empty, false);
-    private PasswordValidator Success() => new(_entry,true);
+    public static PasswordValidator Init(string? entry) 
+        => string.IsNullOrEmpty(entry) ? Failed : new(entry, true);
     
-    public PasswordValidator CheckPasswordMatchRequiredLength()
+    private static PasswordValidator Failed => new PasswordValidatorError();
+    private PasswordValidator Success() => new(_entry!,true);
+    
+    public virtual PasswordValidator CheckPasswordMatchRequiredLength()
     {
-        if (string.IsNullOrEmpty(_entry)) 
-            return Failed;
-        
-        int escapedSequenceCount = Regex.Matches(_entry, EscapedSequencePattern).Count;
+        int escapedSequenceCount = Regex.Matches(_entry, @"\\[0-9]{3}").Count;
         // Calculate real length considering escaped sequences as one character
         bool isRealLengthGreaterOrEqualToEight = _entry.Length - escapedSequenceCount * 3 + escapedSequenceCount >= 8;
 
-        return escapedSequenceCount == 0 && isRealLengthGreaterOrEqualToEight  
-            ? Success() 
-            : Failed;
-    }
-    public PasswordValidator CheckPasswordHasAtLeastOneCapitalLetter()
-    {
-        if (string.IsNullOrEmpty(_entry)) 
-            return Failed;
-
-        return _entry.Any(char.IsUpper) 
-            ? Success() 
-            : Failed;
-    }
-    public PasswordValidator CheckPasswordHasAtLeastOneLowercaseLetter()
-    {
-        if (string.IsNullOrEmpty(_entry)) 
-            return Failed;
+        bool hasEscapedChars = escapedSequenceCount != 0;
         
-        return _entry.Any(char.IsLower) 
+        return !hasEscapedChars && isRealLengthGreaterOrEqualToEight  
             ? Success() 
             : Failed;
+    }
+    public virtual PasswordValidator CheckPasswordHasAtLeastOneCapitalLetter() 
+        => _entry.Any(char.IsUpper) ? Success() : Failed;
+    public virtual PasswordValidator CheckPasswordHasAtLeastOneLowercaseLetter() 
+        => _entry.Any(char.IsLower) ? Success() : Failed;
+
+    private sealed class PasswordValidatorError() : PasswordValidator("", false)
+    {
+        public override PasswordValidator CheckPasswordMatchRequiredLength() => Failed;
+        public override PasswordValidator CheckPasswordHasAtLeastOneLowercaseLetter() => Failed;
+        public override PasswordValidator CheckPasswordHasAtLeastOneCapitalLetter() => Failed;
     }
 }
+
