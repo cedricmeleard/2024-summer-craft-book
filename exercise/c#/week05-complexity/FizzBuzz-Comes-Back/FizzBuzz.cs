@@ -8,25 +8,20 @@
         private const int Buzz = 5;
         private const int Fizz_Buzz = 15;
 
-        public static string Convert(int input)
-            => IsOutOfRange(input)
-                ? throw new OutOfRangeException()
-                : ConvertSafely(input);
-
-        private static string ConvertSafely(int input)
+        private static List<KeyValuePair<int, string>> map = new()
         {
-            if (Is(Fizz_Buzz, input))
-                return "FizzBuzz";
-            if (Is(Fizz, input))
-                return "Fizz";
-            if (Is(Buzz, input))
-                return "Buzz";
+            new(Fizz_Buzz, "FizzBuzz"),
+            new(Fizz, "Fizz"),
+            new(Buzz, "Buzz"),
+        };
 
-            return input.ToString();
-        }
-
+        public static string Convert(int input) => map
+            .Where(_ => IsOutOfRange(input) ? throw new OutOfRangeException() : true)
+            .Where(predicate => Is(predicate.Key, input))
+            .Select(predicate => predicate.Value)
+            .FirstOrDefault() ?? input.ToString();
+        
         private static bool Is(int divisor, int input) => input % divisor == 0;
-
         private static bool IsOutOfRange(int input) => input is <= Min or > Max;
     }
 }
