@@ -1,30 +1,35 @@
-namespace CommandProcessor
+using Ardalis.GuardClauses;
+using CommandProcessor.Abstractions;
+using CommandProcessor.Commands;
+
+namespace CommandProcessor;
+
+public class CommandProcessor
 {
-    public class CommandProcessor
+    private readonly IConsoleWrapper _consoleWrapper;
+    private readonly ICommandProvider _commandProvider;
+    public CommandProcessor(IConsoleWrapper consoleWrapper, ICommandProvider commandProvider)
     {
-        private readonly Dictionary<string, ICommand> _commandMap = new();
-
-        public CommandProcessor()
-        {
-            _commandMap["greet"] = new ActionCommand(() => Console.WriteLine("Hello, World!"));
-            _commandMap["exit"] = new ActionCommand(() => Console.WriteLine("Exiting application..."));
-        }
-
-        public void ProcessCommand(string command)
-        {
-            if (_commandMap.ContainsKey(command))
-            {
-                _commandMap[command]?.Execute();
-            }
-            else
-            {
-                Console.WriteLine("Unknown command");
-            }
-        }
+        _consoleWrapper = consoleWrapper;
+        _commandProvider = commandProvider;
     }
-
-    public class ActionCommand(Action action) : ICommand
+    public void ProcessCommand(string command, string parameter = "")
     {
-        public void Execute() => action();
+        var foundCommand = _commandProvider.FindByName(command);
+        
+        if (foundCommand is null) {
+            new UnknownCommand(_consoleWrapper).Execute(string.Empty);
+            return;
+        }
+
+        Execute(foundCommand, parameter);
+    }
+    
+    private void Execute(Type foundCommand, string parameter)
+    {
+        Guard.Against.Null(foundCommand);
+        
+        (Activator.CreateInstance(foundCommand!, _consoleWrapper) as IActionCommand)?
+            .Execute(parameter);
     }
 }
