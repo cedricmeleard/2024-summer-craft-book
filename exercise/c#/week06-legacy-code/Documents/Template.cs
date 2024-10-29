@@ -16,25 +16,13 @@ namespace Documents
             new Template(DocumentTemplate.GLPM, RecordType.LegalProspect, "GLPM")
         };
 
-        public static Template FindTemplateFor(string documentType, string recordType)
-        {
-            foreach (var dtt in TemplateMappings())
-            {
-                if (dtt.DocumentType.Equals(documentType, StringComparison.InvariantCultureIgnoreCase) &&
-                    dtt.RecordType.ToString().Equals(recordType, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    return dtt;
-                }
-                else if (dtt.DocumentType.Equals(documentType, StringComparison.InvariantCultureIgnoreCase) &&
-                         dtt.RecordType.ToString() == "All")
-                {
-                    return dtt;
-                }
-            }
-
-            throw new ArgumentException("Invalid Document template type or record type");
-        }
-
-        public override string ToString() => DocumentTemplate.ToString();
+        public static Template FindTemplateFor(string documentType, string recordType) 
+            => TemplateMappings()
+                   .FirstOrDefault(t => t.IsMatchDocumentAndRecordType(documentType, recordType)) 
+                   ?? throw new ArgumentException("Invalid Document template type or record type");
+        
+        private bool IsMatchDocumentAndRecordType(string documentType, string recordType) 
+            => DocumentType.Equals(documentType, StringComparison.InvariantCultureIgnoreCase) 
+               && RecordType.ToString().Equals(recordType, StringComparison.InvariantCultureIgnoreCase);
     }
 }

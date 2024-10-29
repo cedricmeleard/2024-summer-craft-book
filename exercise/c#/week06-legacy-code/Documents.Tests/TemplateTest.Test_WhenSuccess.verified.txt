@@ -1,0 +1,33 @@
+﻿[
+  {
+    DocumentType: DEER
+  },
+  {
+    DocumentTemplate: DEERPM,
+    RecordType: LegalProspect,
+    DocumentType: DEER
+  },
+  {
+    DocumentTemplate: AUTP,
+    DocumentType: AUTP
+  },
+  {
+    DocumentTemplate: AUTM,
+    RecordType: LegalProspect,
+    DocumentType: AUTM
+  },
+  {
+    DocumentTemplate: SPEC,
+    RecordType: All,
+    DocumentType: SPEC
+  },
+  {
+    DocumentTemplate: GLPP,
+    DocumentType: GLPP
+  },
+  {
+    DocumentTemplate: GLPM,
+    RecordType: LegalProspect,
+    DocumentType: GLPM
+  }
+]
