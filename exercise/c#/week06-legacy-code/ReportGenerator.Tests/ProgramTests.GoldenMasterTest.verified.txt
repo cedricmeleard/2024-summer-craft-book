@@ -1,0 +1,13 @@
+﻿Starting CSV Report Generation...
+CSV Header: ID, Value, Description
+1,100,Sample Data 1
+2,200,Sample Data 2
+CSV Report Generated Successfully.
+Starting PDF Report Generation...
+PDF Report Title: Comprehensive Data Report
+------------------------------------------------
+Data ID: 1 | Data Value: 100 | Description: Sample Data 1
+Data ID: 2 | Data Value: 200 | Description: Sample Data 2
+------------------------------------------------
+PDF Report Generated Successfully.
+Report type JSON not supported.

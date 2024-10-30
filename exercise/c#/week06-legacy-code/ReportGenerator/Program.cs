@@ -1,17 +1,22 @@
-﻿namespace ReportGenerator
+﻿using ReportGenerator.Core;
+
+namespace ReportGenerator;
+
+public static class Program
 {
-    public static class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
-        {
-            var generator = new ReportGenerator();
-            List<ReportData> data =
-            [
-                new ReportData(1, 100.0, "Sample Data 1"),
-                new ReportData(2, 200.0, "Sample Data 2")
-            ];
-            generator.GenerateReport("CSV", data);
-            generator.GenerateReport("PDF", data);
-        }
+        List<ReportData> data =
+        [
+            new(1, 100.0, "Sample Data 1"),
+            new(2, 200.0, "Sample Data 2")
+        ];
+        
+        // use dependency injection latter
+        var generator = new ReportGenerator(new FileGeneratorProvider(), data);
+            
+        generator.GenerateReport("CSV");
+        generator.GenerateReport("PDF");
+        generator.GenerateReport("JSON");
     }
 }
