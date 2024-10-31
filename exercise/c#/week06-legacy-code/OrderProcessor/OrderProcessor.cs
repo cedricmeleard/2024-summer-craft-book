@@ -1,22 +1,10 @@
-﻿namespace OrderProcessor
-{
-    public class OrderProcessor
-    {
-        public void ProcessOrders(List<Order> orders)
-        {
-            foreach (var item in orders)
-            {
-                if (item.Status == Order.Unprocessed)
-                {
-                    if (item.Items > 5)
-                    {
-                        // apply bulk discount
-                        item.Total *= 0.9;
-                    }
+﻿namespace OrderProcessor;
 
-                    item.Status = Order.Processed;
-                }
-            }
-        }
-    }
+public class OrderProcessor
+{
+    public static void ProcessOrders(List<Order> orders) 
+        => orders
+            .Where(o => o.IsUnProcessed)
+            .ToList()
+            .ForEach(o => o.Process());
 }

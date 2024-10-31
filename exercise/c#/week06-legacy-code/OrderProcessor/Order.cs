@@ -1,26 +1,23 @@
-﻿namespace OrderProcessor
+﻿namespace OrderProcessor;
+
+public class Order(OrderStatus status, int numberOfItems, double total)
 {
-    public class Order(int status, int items, double total)
+    private const int MinItemsForDiscount = 5;
+    private const double Discount = 0.9;
+    
+    private OrderStatus _status = status;
+    
+    public double Total { get; private set; } = total;
+    public bool IsProcessed => _status == OrderStatus.Processed;
+    public bool IsUnProcessed => !IsProcessed;
+    
+    public void Process()
     {
-        public const int Unprocessed = 0;
-        public const int Processed = 1;
-
-        public int Status
-        {
-            get => status;
-            set => status = value;
-        }
-
-        public int Items
-        {
-            get => items;
-            set => items = value;
-        }
-
-        public double Total
-        {
-            get => total;
-            set => total = value;
-        }
+        if (IsEligibleForDiscount) 
+            ApplyBulkDiscount();
+        
+        _status = OrderStatus.Processed;
     }
+    private void ApplyBulkDiscount() => Total *= Discount;
+    private bool IsEligibleForDiscount => numberOfItems > MinItemsForDiscount;
 }
